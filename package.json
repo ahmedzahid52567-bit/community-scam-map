@@ -1,0 +1,8 @@
+{
+  "name": "community-scam-map",
+  "version": "1.0.0",
+  "description": "Community Scam Map - people warn each other about scam phone numbers, UPI IDs and links",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}
