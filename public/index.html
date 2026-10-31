@@ -1,0 +1,69 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Community Scam Map</title><style>
+body{font-family:system-ui,Arial,sans-serif;margin:0;background:#f6f7f9;color:#111}
+header{background:#0b3d2e;color:#fff;padding:16px}h1{margin:0;font-size:22px}p{line-height:1.5}
+main{padding:16px;max-width:720px;margin:auto}section{background:#fff;border-radius:12px;padding:16px;margin:0 0 16px;box-shadow:0 1px 4px #0002}
+label{display:block;margin:10px 0 4px;font-weight:600}input,select,textarea{width:100%;padding:10px;border:1px solid #ccc;border-radius:8px;font-size:16px;box-sizing:border-box}
+button{background:#0b3d2e;color:#fff;border:0;padding:12px 16px;border-radius:8px;font-size:16px;margin-top:12px;cursor:pointer;width:100%}
+button.secondary{background:#e8eef0;color:#111}.ok{color:#0b6b3a}.warn{color:#b45309}.bad{color:#b91c1c}
+.card{border:1px solid #ddd;border-radius:10px;padding:12px;margin-top:12px}.small{font-size:13px;color:#555}
+#licenceBanner{display:none;background:#fee2e2;border:1px solid #fca5a5;padding:12px;border-radius:10px;margin-bottom:16px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}.tabs button{width:auto}
+</style></head><body><header><h1>🛡️ Community Scam Map</h1><p id="tag">Has anyone reported this number, UPI ID or link? Check before you trust it.</p>
+<div><button class="secondary" style="width:auto" onclick="setLang('en')">English</button> <button class="secondary" style="width:auto" onclick="setLang('hi')">हिन्दी</button></div></header>
+<main>
+<div id="licenceBanner"><b>Licence expired. Contact your provider.</b><br>Reports and lookups are locked until a new licence is uploaded. Your old data is not deleted.</div>
+<div id="licenceBox" class="small"></div>
+
+<section><h2 id="tCheck">1. Check a number / UPI / link</h2>
+<label>Type</label><select id="lkType"><option value="phone">📞 Phone</option><option value="upi">💳 UPI ID</option><option value="url">🔗 Link</option><option value="sender_id">💬 SMS sender</option></select>
+<label>Value</label><input id="lkValue" placeholder="+91 98765 43210  /  ravi@okaxis  /  sbi-kyc.in/pay">
+<button onclick="lookup()">Check</button><div id="lkOut"></div>
+<p class="small">Helplines: 1930 (cybercrime), cybercrime.gov.in — these always show Verified business.</p></section>
+
+<section><h2 id="tReport">2. Report a scam — under 60 seconds, no login</h2>
+<label>How did it reach you?</label><select id="rChannel"><option>📞 Phone call</option><option>💬 SMS or WhatsApp</option><option>🔲 QR code</option><option>🌐 Fake website</option><option>💳 UPI request</option><option>❓ Something else</option></select>
+<label>What kind of scam?</label><select id="rType">
+<option value="digital-arrest">Digital arrest (fake police)</option><option value="fake-kyc-link">Fake KYC link</option><option value="upi-refund-qr">UPI refund QR</option><option value="investment-group">Investment group</option><option value="courier-customs">Courier / customs</option><option value="job-offer">Job offer</option><option value="lottery-prize">Lottery prize</option><option value="loan-app-harassment">Loan app harassment</option><option value="electricity-disconnection">Electricity disconnection SMS</option><option value="fake-customer-care">Fake customer care</option><option value="otp-call">OTP call</option><option value="sextortion">Sextortion</option></select>
+<label>Identifier type</label><select id="rIdType"><option value="phone">Phone</option><option value="upi">UPI ID</option><option value="url">Link</option><option value="sender_id">SMS sender</option></select>
+<label>Number / UPI / link</label><input id="rIdValue" placeholder="+91 98765 43210">
+<label>Area (we save only the area, never your exact location)</label><select id="rPin"></select>
+<label>When? (leave as Just now if it just happened)</label><select id="rWhen"><option value="now">Just now</option><option value="custom">Choose date/time</option></select>
+<input id="rWhenCustom" type="datetime-local" style="display:none;margin-top:8px">
+<label>What happened? (your own words — copied text counts less)</label><textarea id="rNote" rows="3" placeholder="Video call from a man in police uniform..."></textarea>
+<button onclick="report()">Report</button><div id="rOut"></div></section>
+
+<section><h2>3. Scam map — last 7 days, by area</h2>
+<label>Area</label><select id="mPin"></select>
+<button onclick="loadMap()">Show map</button><div id="mOut"></div></section>
+
+<section><h2>4. Alerts near you</h2>
+<label>Area</label><select id="aPin"></select>
+<button onclick="loadAlerts()">Show alerts</button><div id="aOut"></div></section>
+
+<section><h2>5. Dispute (for a business)</h2>
+<p class="small">If this is your real number, dispute it. While under review it will never show as Known scam.</p>
+<label>Identifier type</label><select id="dType"><option value="phone">Phone</option><option value="upi">UPI ID</option><option value="url">Link</option><option value="sender_id">SMS sender</option></select>
+<label>Value</label><input id="dValue"><label>Your business name</label><input id="dName"><label>Contact email</label><input id="dEmail">
+<button onclick="dispute()">Submit dispute</button><div id="dOut"></div></section>
+
+<section><h2>Licence (for the demo)</h2><div id="licOut"></div>
+<p class="small">Judges: upload a 5-minute licence, wait, see the expired screen, then upload a long licence — no restart, old data stays.</p>
+<label>Paste licence JSON</label><textarea id="licJson" rows="4" placeholder='{"licensee":"Demo Bank","expires_at":"...","signature":"..."}'></textarea>
+<button onclick="uploadLicence()">Upload licence</button><div id="licUpOut"></div></section>
+</main>
+<script>
+const AREAS=[["560102","HSR Layout, Bengaluru"],["560038","Indiranagar, Bengaluru"],["560034","Koramangala, Bengaluru"],["560066","Whitefield, Bengaluru"],["560076","BTM Layout, Bengaluru"],["560011","Jayanagar, Bengaluru"],["560037","Marathahalli, Bengaluru"],["560103","Bellandur, Bengaluru"],["560100","Electronic City, Bengaluru"],["560078","JP Nagar, Bengaluru"],["560003","Malleshwaram, Bengaluru"],["560010","Rajajinagar, Bengaluru"],["560024","Hebbal, Bengaluru"],["560064","Yelahanka, Bengaluru"],["560070","Banashankari, Bengaluru"],["400050","Bandra West, Mumbai"],["110016","Hauz Khas, Delhi"],["500081","Madhapur, Hyderabad"],["600020","Adyar, Chennai"],["411014","Viman Nagar, Pune"],["700091","Salt Lake Sector V, Kolkata"],["380015","Satellite, Ahmedabad"],["302017","Malviya Nagar, Jaipur"],["226010","Gomti Nagar, Lucknow"],["682030","Kakkanad, Kochi"]];
+for(const s of ["rPin","mPin","aPin"]) { const el=document.getElementById(s); AREAS.forEach(a=>{const o=document.createElement("option");o.value=a[0];o.textContent=a[1]+" ("+a[0]+")";el.appendChild(o)}); }
+document.getElementById("rWhen").onchange=e=>{document.getElementById("rWhenCustom").style.display=e.target.value==="custom"?"block":"none"};
+function setLang(l){ if(l==="hi"){document.getElementById("tag").textContent="क्या किसी ने इस नंबर, UPI ID या लिंक की शिकायत की है? भरोसा करने से पहले जाँचें।";document.getElementById("tCheck").textContent="1. नंबर / UPI / लिंक जाँचें";document.getElementById("tReport").textContent="2. स्कैम की रिपोर्ट करें — 60 सेकंड से कम, बिना लॉगिन";} else {location.reload();} }
+async function j(method,path,body){ const r=await fetch(path,{method,headers:{"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined}); const t=await r.json().catch(()=>({})); return {ok:r.ok,status:r.status,data:t}; }
+async function refreshLicence(){ const r=await j("GET","/license"); document.getElementById("licenceBanner").style.display=(r.data.valid===false)?"block":"none"; document.getElementById("licOut").innerHTML=r.data.licensee?`Licensed to <b>${r.data.licensee}</b> until <b>${r.data.expires_at}</b> — valid: ${r.data.valid}`:"No licence on file."; document.getElementById("licenceBox").textContent=r.data.licensee?`Licence: ${r.data.licensee} · expires ${r.data.expires_at}`:""; }
+async function lookup(){ const type=document.getElementById("lkType").value, value=document.getElementById("lkValue").value.trim(); const r=await j("GET","/lookup?type="+encodeURIComponent(type)+"&value="+encodeURIComponent(value)); const o=document.getElementById("lkOut"); if(!r.ok){o.innerHTML=`<div class="card bad">${r.data.error||"Error"} (${r.status})</div>`;return;} const d=r.data; let msg=""; if(d.verdict==="KNOWN_SCAM") msg=`<b class="bad">Reported by ${d.distinct_reporters} people near you</b> — do not trust this ${type}.`; else if(d.verdict==="SUSPICIOUS") msg=`<b class="warn">Some reports — be careful.</b> Reported by ${d.distinct_reporters} people (counted after trust rules).`; else if(d.verdict==="VERIFIED_BUSINESS") msg=`<b class="ok">Verified business</b>${d.verified_name?" — "+d.verified_name:""}.`; else msg=`<b class="ok">No reports found</b> for this ${type}.`; o.innerHTML=`<div class="card">${msg}<br><span class="small">Showing: ${d.display_value} · Type: ${d.scam_type||"-"} · First seen: ${d.first_seen||"-"} · Last seen: ${d.last_seen||"-"}${d.challenged?" · Under review (disputed)":""}</span></div>`; }
+async function report(){ const when=document.getElementById("rWhen").value; let occ=new Date().toISOString(); if(when==="custom"&&document.getElementById("rWhenCustom").value){ occ=new Date(document.getElementById("rWhenCustom").value).toISOString(); } const body={report_id:"rep_"+Date.now(),occurred_at:occ,reported_at:new Date().toISOString(),reporter_id:"web_"+(localStorage.getItem("uid")||(localStorage.setItem("uid","u_"+Math.random().toString(36).slice(2)),localStorage.getItem("uid"))),ip_prefix:"",channel:document.getElementById("rChannel").value,scam_type:document.getElementById("rType").value,identifier_type:document.getElementById("rIdType").value,identifier_value:document.getElementById("rIdValue").value,pincode:document.getElementById("rPin").value,note:document.getElementById("rNote").value}; const r=await j("POST","/reports",body); document.getElementById("rOut").innerHTML=r.ok?`<div class="card ok">Reported. Case ID: <b>${r.data.case_id}</b>${r.data.merged?" (joined an existing report about the same number)":""}</div>`:`<div class="card bad">${r.data.error||"Error"} (${r.status}) — check the number format and area.</div>`; }
+async function loadMap(){ const pin=document.getElementById("mPin").value; const r=await j("GET","/map?pincode="+pin+"&days=7&radius_km=2"); const o=document.getElementById("mOut"); if(!r.ok){o.innerHTML=`<div class="card bad">${r.data.error}</div>`;return;} if(!r.data.clusters.length){o.innerHTML="<p>No scam reports in this area in the last 7 days.</p>";return;} o.innerHTML=r.data.clusters.map(c=>`<div class="card"><b>${c.locality}, ${c.city}</b> — ${c.count} reports this week · Top: ${c.top_scam_type} · Severity: ${c.severity}<br><span class="small">Area point: ${c.lat}, ${c.lng} (area only, not a person)</span></div>`).join(""); }
+async function loadAlerts(){ const pin=document.getElementById("aPin").value; const r=await j("GET","/alerts?pincode="+pin); const o=document.getElementById("aOut"); if(!r.ok){o.innerHTML=`<div class="card bad">${r.data.error}</div>`;return;} if(!r.data.alerts.length){o.innerHTML="<p>No alerts — nothing unusual near you.</p>";return;} o.innerHTML=r.data.alerts.map(a=>`<div class="card">${a.type==="SPIKE"?`<b>Spike:</b> ${a.count} reports in 24h (usual ${a.baseline_per_day}/day)`:`<b>New scam type:</b> ${a.scam_type} seen here for the first time in 30 days`}</div>`).join(""); }
+async function dispute(){ const body={identifier_type:document.getElementById("dType").value,identifier_value:document.getElementById("dValue").value,claimant_name:document.getElementById("dName").value,contact_email:document.getElementById("dEmail").value,proof_note:"Submitted from app"}; const r=await j("POST","/challenges",body); document.getElementById("dOut").innerHTML=r.ok?`<div class="card ok">Dispute received. ID: ${r.data.challenge_id} — status: under_review. Lookup will no longer show Known scam while under review.</div>`:`<div class="card bad">${r.data.error}</div>`; }
+async function uploadLicence(){ let body; try{body=JSON.parse(document.getElementById("licJson").value);}catch(e){document.getElementById("licUpOut").textContent="That is not valid JSON.";return;} const r=await j("POST","/license",body); document.getElementById("licUpOut").textContent=r.ok?"Licence uploaded — app works again, no restart.":"Upload failed: "+(r.data.error||r.status); refreshLicence(); }
+refreshLicence();
+</script></body></html>

@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: community-scam-map
+    env: node
+    buildCommand: "echo no-build-needed"
+    startCommand: "node server.js"
+    plan: free
