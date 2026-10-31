@@ -1,16 +1,49 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Community Scam Map</title><style>
-body{font-family:system-ui,Arial,sans-serif;margin:0;background:#f6f7f9;color:#111}
-header{background:#0b3d2e;color:#fff;padding:16px}h1{margin:0;font-size:22px}p{line-height:1.5}
-main{padding:16px;max-width:720px;margin:auto}section{background:#fff;border-radius:12px;padding:16px;margin:0 0 16px;box-shadow:0 1px 4px #0002}
-label{display:block;margin:10px 0 4px;font-weight:600}input,select,textarea{width:100%;padding:10px;border:1px solid #ccc;border-radius:8px;font-size:16px;box-sizing:border-box}
-button{background:#0b3d2e;color:#fff;border:0;padding:12px 16px;border-radius:8px;font-size:16px;margin-top:12px;cursor:pointer;width:100%}
-button.secondary{background:#e8eef0;color:#111}.ok{color:#0b6b3a}.warn{color:#b45309}.bad{color:#b91c1c}
-.card{border:1px solid #ddd;border-radius:10px;padding:12px;margin-top:12px}.small{font-size:13px;color:#555}
-#licenceBanner{display:none;background:#fee2e2;border:1px solid #fca5a5;padding:12px;border-radius:10px;margin-bottom:16px}
+<title>Community Scam Map</title>
+<!-- Frameworks: Tailwind CSS for layout/utilities, Animate.css for entrance effects, GSAP for smooth motion -->
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--neon:#00ff9c;--cyan:#22d3ee;--red:#ff2d55;--amber:#f59e0b}
+html{scroll-behavior:smooth}
+body{font-family:'Rajdhani',system-ui,Arial,sans-serif;margin:0;background:#04070d;color:#e6f4ea;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,255,156,.025) 2px 3px)}
+#matrix{position:fixed;inset:0;z-index:0;opacity:.18;pointer-events:none}
+header{position:relative;z-index:1;background:linear-gradient(135deg,#020617,#0b3d2e 55%,#022c22);color:#fff;padding:22px 16px 18px;overflow:hidden;border-bottom:2px solid var(--neon);box-shadow:0 0 30px rgba(0,255,156,.25)}
+header::after{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,var(--neon),var(--cyan),transparent);animation:scanline 3.5s linear infinite}
+@keyframes scanline{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(120px);opacity:0}}
+h1{margin:0;font-family:'Orbitron',sans-serif;font-size:24px;letter-spacing:1px;text-shadow:0 0 18px rgba(0,255,156,.6)}
+h2{font-family:'Orbitron',sans-serif;font-size:18px;letter-spacing:.5px}
+p{line-height:1.5}
+.shield-wrap{display:flex;align-items:center;gap:14px}
+.shield{position:relative;width:56px;height:56px;flex:none;display:grid;place-items:center;font-size:30px;background:#052e22;border:2px solid var(--neon);border-radius:50%;box-shadow:0 0 0 0 rgba(0,255,156,.5);animation:shieldPulse 2.2s ease-in-out infinite}
+@keyframes shieldPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,255,156,.45)}50%{box-shadow:0 0 0 14px rgba(0,255,156,0)}}
+.radar{width:64px;height:64px;border-radius:50%;border:2px solid rgba(34,211,238,.6);background:repeating-radial-gradient(circle at center,transparent 0 10px,rgba(34,211,238,.12) 10px 11px);position:relative;overflow:hidden;margin:10px auto}
+.radar::after{content:"";position:absolute;inset:0;background:conic-gradient(from 0deg,rgba(34,211,238,.7),transparent 70deg);animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+main{position:relative;z-index:1;padding:16px;max-width:720px;margin:auto}
+section{background:rgba(10,20,32,.92);border:1px solid rgba(0,255,156,.25);border-radius:16px;padding:16px;margin:0 0 18px;box-shadow:0 8px 30px rgba(0,0,0,.45);backdrop-filter:blur(4px);transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease;opacity:0;transform:translateY(18px)}
+section.visible{opacity:1;transform:none}
+section:hover{transform:translateY(-3px);border-color:var(--neon);box-shadow:0 0 0 1px rgba(0,255,156,.35),0 14px 34px rgba(0,0,0,.5)}
+label{display:block;margin:10px 0 4px;font-weight:700;letter-spacing:.3px}input,select,textarea{width:100%;padding:10px;border:1px solid #334155;border-radius:10px;font-size:16px;box-sizing:border-box;background:#0b1526;color:#e6f4ea}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--cyan);border-color:var(--cyan)}
+button{background:linear-gradient(135deg,#059669,#00ff9c);color:#04120c;border:0;padding:12px 16px;border-radius:10px;font-size:17px;font-weight:800;margin-top:12px;cursor:pointer;width:100%;transition:transform .2s ease,box-shadow .2s ease;position:relative;overflow:hidden}
+button:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,255,156,.45)}
+button.secondary{background:#132f3a;color:#e6f4ea}.ok{color:#34d399}.warn{color:#fbbf24}.bad{color:#fb7185}
+.card{border:1px solid #334155;border-radius:12px;padding:12px;margin-top:12px;background:#0b1526;animation:verdictPop .45s ease both}
+@keyframes verdictPop{from{opacity:0;transform:scale(.96) translateY(6px)}to{opacity:1;transform:none}}
+.card:has(.bad){border-color:var(--red);box-shadow:0 0 18px rgba(255,45,85,.25);animation:verdictPop .45s ease both,alertPulse 1.6s ease-in-out infinite}
+@keyframes alertPulse{0%,100%{box-shadow:0 0 12px rgba(255,45,85,.2)}50%{box-shadow:0 0 24px rgba(255,45,85,.45)}}
+.small{font-size:13px;color:#94a3b8}
+#licenceBanner{display:none;background:#3f0d1a;border:1px solid #fb7185;padding:12px;border-radius:10px;margin-bottom:16px}
 .tabs{display:flex;gap:8px;flex-wrap:wrap}.tabs button{width:auto}
-</style></head><body><header><h1>🛡️ Community Scam Map</h1><p id="tag">Has anyone reported this number, UPI ID or link? Check before you trust it.</p>
-<div><button class="secondary" style="width:auto" onclick="setLang('en')">English</button> <button class="secondary" style="width:auto" onclick="setLang('hi')">हिन्दी</button></div></header>
+.cyber-badge{display:inline-block;padding:4px 10px;border:1px solid var(--cyan);color:var(--cyan);border-radius:999px;font-size:12px;letter-spacing:1.5px;font-weight:700}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}section{opacity:1;transform:none}}
+</style></head><body><canvas id="matrix"></canvas>
+<header><div class="shield-wrap"><div class="shield animate__animated animate__pulse animate__infinite">🛡️</div><div><h1 class="animate__animated animate__fadeInDown">Community Scam Map</h1><p id="tag">Has anyone reported this number, UPI ID or link? Check before you trust it.</p><span class="cyber-badge">🔒 CYBER SHIELD • LIVE PROTECTION</span></div></div>
+<div style="margin-top:12px"><button class="secondary" style="width:auto" onclick="setLang('en')">English</button> <button class="secondary" style="width:auto" onclick="setLang('hi')">हिन्दी</button></div></header>
 <main>
 <div id="licenceBanner"><b>Licence expired. Contact your provider.</b><br>Reports and lookups are locked until a new licence is uploaded. Your old data is not deleted.</div>
 <div id="licenceBox" class="small"></div>
@@ -18,7 +51,7 @@ button.secondary{background:#e8eef0;color:#111}.ok{color:#0b6b3a}.warn{color:#b4
 <section><h2 id="tCheck">1. Check a number / UPI / link</h2>
 <label>Type</label><select id="lkType"><option value="phone">📞 Phone</option><option value="upi">💳 UPI ID</option><option value="url">🔗 Link</option><option value="sender_id">💬 SMS sender</option></select>
 <label>Value</label><input id="lkValue" placeholder="+91 98765 43210  /  ravi@okaxis  /  sbi-kyc.in/pay">
-<button onclick="lookup()">Check</button><div id="lkOut"></div>
+<button onclick="lookup()">🔍 Check</button><div id="lkOut"></div>
 <p class="small">Helplines: 1930 (cybercrime), cybercrime.gov.in — these always show Verified business.</p></section>
 
 <section><h2 id="tReport">2. Report a scam — under 60 seconds, no login</h2>
@@ -31,15 +64,15 @@ button.secondary{background:#e8eef0;color:#111}.ok{color:#0b6b3a}.warn{color:#b4
 <label>When? (leave as Just now if it just happened)</label><select id="rWhen"><option value="now">Just now</option><option value="custom">Choose date/time</option></select>
 <input id="rWhenCustom" type="datetime-local" style="display:none;margin-top:8px">
 <label>What happened? (your own words — copied text counts less)</label><textarea id="rNote" rows="3" placeholder="Video call from a man in police uniform..."></textarea>
-<button onclick="report()">Report</button><div id="rOut"></div></section>
+<button onclick="report()">🚨 Report</button><div id="rOut"></div></section>
 
-<section><h2>3. Scam map — last 7 days, by area</h2>
+<section><h2>3. Scam map — last 7 days, by area</h2><div class="radar" aria-hidden="true"></div>
 <label>Area</label><select id="mPin"></select>
-<button onclick="loadMap()">Show map</button><div id="mOut"></div></section>
+<button onclick="loadMap()">🗺️ Show map</button><div id="mOut"></div></section>
 
 <section><h2>4. Alerts near you</h2>
 <label>Area</label><select id="aPin"></select>
-<button onclick="loadAlerts()">Show alerts</button><div id="aOut"></div></section>
+<button onclick="loadAlerts()">⚠️ Show alerts</button><div id="aOut"></div></section>
 
 <section><h2>5. Dispute (for a business)</h2>
 <p class="small">If this is your real number, dispute it. While under review it will never show as Known scam.</p>
@@ -66,4 +99,19 @@ async function loadAlerts(){ const pin=document.getElementById("aPin").value; co
 async function dispute(){ const body={identifier_type:document.getElementById("dType").value,identifier_value:document.getElementById("dValue").value,claimant_name:document.getElementById("dName").value,contact_email:document.getElementById("dEmail").value,proof_note:"Submitted from app"}; const r=await j("POST","/challenges",body); document.getElementById("dOut").innerHTML=r.ok?`<div class="card ok">Dispute received. ID: ${r.data.challenge_id} — status: under_review. Lookup will no longer show Known scam while under review.</div>`:`<div class="card bad">${r.data.error}</div>`; }
 async function uploadLicence(){ let body; try{body=JSON.parse(document.getElementById("licJson").value);}catch(e){document.getElementById("licUpOut").textContent="That is not valid JSON.";return;} const r=await j("POST","/license",body); document.getElementById("licUpOut").textContent=r.ok?"Licence uploaded — app works again, no restart.":"Upload failed: "+(r.data.error||r.status); refreshLicence(); }
 refreshLicence();
+// --- Cybersecurity animations (visual only, no API change) ---
+(function(){
+  const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("visible");io.unobserve(e.target)}}),{threshold:.08});
+  document.querySelectorAll("section").forEach(s=>io.observe(s));
+  if(window.gsap && !reduced){ gsap.from("header h1",{y:-18,opacity:0,duration:.7,ease:"power3.out"}); }
+  if(reduced) return;
+  const c=document.getElementById("matrix"), x=c.getContext("2d"); let w,h,cols,drops;
+  function size(){ w=c.width=innerWidth; h=c.height=innerHeight; cols=Math.floor(w/16); drops=Array(cols).fill(0); }
+  size(); addEventListener("resize",size);
+  const chars="01<>#{}[]$%&@";
+  (function draw(){ x.fillStyle="rgba(4,7,13,.12)"; x.fillRect(0,0,w,h); x.fillStyle="#00ff9c"; x.font="14px monospace";
+    drops.forEach((y,i)=>{ const ch=chars[Math.floor(Math.random()*chars.length)]; x.fillText(ch,i*16,y*16); if(y*16>h && Math.random()>.98) drops[i]=0; drops[i]++; });
+    setTimeout(()=>requestAnimationFrame(draw),70); })();
+})();
 </script></body></html>
